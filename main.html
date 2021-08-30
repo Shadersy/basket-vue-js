@@ -1,64 +1,159 @@
-<div class="nav-bar"></div>
+//Create a new component for product-details with a prop of details. 
+     
+Vue.component('product', {
+  props: {
+    premium: { 
+      type: Boolean,
+      required: true
+    },
+    offer: {
+      type: Array,
+      required: false
+    },
+  },
+  template: `
+   <div class="product">  
+      <div class="product-image">
+        <img v-if="inStock" :src="image" class="product-image"
+                 @mouseover="zoom($event)"
+                 />
+           <img v-else :src="image" class="image-disabled"
+                 @mouseover="zoom($event)"
+                 />
+          </div>
+          
+      <div class="product-info">
+          <h1>{{ product }}</h1>
+          <p v-if="inStock">Имеется в наличии</p>
+          <p v-else>Не имеется в наличии</p>
+          <p> Доставка: {{ shipping }}</p>
+          <p> Остаток в магазине: {{ variantQuanaity }}</p>
+          <p> Цена: {{price}} </p>
 
-<div id="app">
-  <div class="cart">
-        <product :premium="premium" :offer="[
-              {
-                variantId: 123,
-                variantColor: 'green',
-                variantImage:  'https://www.vuemastery.com/images/challenges/vmSocks-green-onWhite.jpg',
-                variantQuantity: 10,
-                price: 500,
-                product: test,
-              },
-              {
-            variantId: 2235,
-            variantColor: 'blue',
-            variantImage: 'https://www.vuemastery.com/images/challenges/vmSocks-blue-onWhite.jpg',
-            variantQuantity: 0,
-            price: 500,
-            },
-           ]"></product>
-     <product :premium="premium" :offer="[
-              {
-                variantId: 126,
-                variantColor: 'yellow',
-                variantImage:  'https://assets.adidas.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/b2b684f8915346858983ac5b003096be_9366/Krossovki_adidas_ZX_8000_x_LEGO(r)_zheltyj_FY7081_01_standard.jpg',
-                variantQuantity: 5,
-                price: 4500,
-                product: test,
-              },
-              {
-            variantId: 127,
-            variantColor: 'blue',
-            variantImage: 'https://assets.adidas.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/2b9ad23c690640a79715ac5b002f67af_9366/Krossovki_adidas_ZX_8000_x_LEGO(r)_sinij_FY7083_01_standard.jpg',
-            variantQuantity: 3,
-            price: 4500,
-            },
-            {  
-            variantId: 128,
-            variantColor: 'red',
-            variantImage: 'https://assets.adidas.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/417661cc237a4791ab4bac5b002e7cb5_9366/Krossovki_adidas_ZX_8000_x_LEGO(r)_krasnyj_FY7084_01_standard.jpg',
-            variantQuantity: 1,
-            price: 4500,
-            },
-                                                     {  
-            variantId: 128,
-            variantColor: 'green',
-            variantImage: 'https://assets.adidas.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/0e93f61f9ef34059b008ac5b003074ac_9366/Krossovki_adidas_ZX_8000_x_LEGO(r)_zelenyj_FY7082_01_standard.jpg',
-            variantQuantity: 4,
-            price: 4500,
-            },
-           ]"></product>
- 
-  <div class="basket">
-  <p>Количество товаров в корзине: {{this.$root.cartQuantity }}</p>
-      </div>
-  </div>
-</div>
+          <product-details :details="details"></product-details>
 
+          <div class="color-box"
+               v-for="(variant, index) in variants" 
+               :key="variant.variantId"
+               :style="{ backgroundColor: variant.variantColor }"
+               @mouseover="updateProduct(index)"
+               >
+          </div> 
 
-</div> 
-    
+          <button v-on:click="addToCart" 
+            :disabled="!inStock"
+            :class="{ disabledButton: !inStock }"
+            >
+         Добавить в корзину
+          </button>
   
- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+   <button v-on:click="removeFromCart" 
+            :class="{ disabledButton: !removingOportunity}"
+            > Удалить из корзины
+            </button>
+        
+       </div>  
+    </div>
+   `,
+  data: function () {
+    return {
+        product: JSON.parse(JSON.stringify(this.offer))[0]['product'],
+        brand: 'Vue Mastery',
+        selectedVariant: 0,
+        details: ['80% cotton', '20% polyester', 'Gender-neutral'],
+        variants: this.offer,
+        
+    }
+  },
+    methods: {
+      addToCart: function() {  
+         if(this.variants[this.selectedVariant].variantQuantity>0){
+            this.variants[this.selectedVariant].variantQuantity-=1;
+            this.$root.cart.push(this.variants[this.selectedVariant]);
+            this.$root.cartQuantity +=1;
+            this.$root.totalSumm
+          +=this.variants[this.selectedVariant]['price'];
+        }
+      },
+      
+      removeFromCart: function() {
+        for (index = 0; index < this.$root.cart.length; ++index) {
+            if(this.$root.cart[index] == this.variants[this.selectedVariant])
+              {
+                this.$root.cart.splice(index, 1);
+                this.$root.cartQuantity -=1;
+                this.variants[this.selectedVariant].variantQuantity+=1;
+                 this.$root.totalSumm
+          -=this.variants[this.selectedVariant]['price'];
+              }
+          };
+      }, 
+      
+        updateProduct: function(index){
+          this.selectedVariant = index
+        },
+      
+      zoom : function(event) {
+          let zoomer = event.currentTarget;
+          event.offsetX ? (offsetX = event.offsetX) : (offsetX = event.touches[0].pageX);
+          event.offsetY ? (offsetY = event.offsetY) : (offsetX = event.touches[0].pageX);
+          let x = offsetX / zoomer.offsetWidth  * 100;
+          let y = offsetY / zoomer.offsetHeight * 100;
+
+        zoomer.style.backgroundPosition = x + "% " + y +"%";
+},
+      },
+
+computed: {
+          title() {
+              return this.brand + ' ' + this.product  
+          },
+          removingOportunity() {
+            removingOportunity = false;
+            for (index = 0; index < this.$root.cart.length; ++index) {
+              if(this.$root.cart[index] == this.variants[this.selectedVariant])
+                {
+                  removingOportunity = true;
+                }
+              };
+            if(removingOportunity && this.$root.cart.length != 0){
+              console.log(this.$root.cart.length);
+              removingOportunity = false;
+              return true;
+            }
+              return false;
+          },
+   
+          image(){
+              return this.variants[this.selectedVariant].variantImage
+          },
+          variantQuanaity() {
+            return this.variants[this.selectedVariant].variantQuantity
+          },
+          inStock(){
+              return this.variants[this.selectedVariant].variantQuantity
+          },
+          cartQuantity(){
+            return this.$root.cartQuantity
+          },
+          shipping() {
+            if (this.premium) {
+              return "Free"
+            }
+            return 2.99
+        },
+          price() {
+            return this.variants[this.selectedVariant].price
+          },
+    }
+})
+
+var app = new Vue({
+    el: '#app',
+    data: {
+        premium: true,
+        cart: [],
+        totalSumm: 0,
+        cartQuantity: 0,
+    },
+})
