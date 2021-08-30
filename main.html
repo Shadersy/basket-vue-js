@@ -1,0 +1,64 @@
+<div class="nav-bar"></div>
+
+<div id="app">
+  <div class="cart">
+        <product :premium="premium" :offer="[
+              {
+                variantId: 123,
+                variantColor: 'green',
+                variantImage:  'https://www.vuemastery.com/images/challenges/vmSocks-green-onWhite.jpg',
+                variantQuantity: 10,
+                price: 500,
+                product: test,
+              },
+              {
+            variantId: 2235,
+            variantColor: 'blue',
+            variantImage: 'https://www.vuemastery.com/images/challenges/vmSocks-blue-onWhite.jpg',
+            variantQuantity: 0,
+            price: 500,
+            },
+           ]"></product>
+     <product :premium="premium" :offer="[
+              {
+                variantId: 126,
+                variantColor: 'yellow',
+                variantImage:  'https://assets.adidas.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/b2b684f8915346858983ac5b003096be_9366/Krossovki_adidas_ZX_8000_x_LEGO(r)_zheltyj_FY7081_01_standard.jpg',
+                variantQuantity: 5,
+                price: 4500,
+                product: test,
+              },
+              {
+            variantId: 127,
+            variantColor: 'blue',
+            variantImage: 'https://assets.adidas.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/2b9ad23c690640a79715ac5b002f67af_9366/Krossovki_adidas_ZX_8000_x_LEGO(r)_sinij_FY7083_01_standard.jpg',
+            variantQuantity: 3,
+            price: 4500,
+            },
+            {  
+            variantId: 128,
+            variantColor: 'red',
+            variantImage: 'https://assets.adidas.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/417661cc237a4791ab4bac5b002e7cb5_9366/Krossovki_adidas_ZX_8000_x_LEGO(r)_krasnyj_FY7084_01_standard.jpg',
+            variantQuantity: 1,
+            price: 4500,
+            },
+                                                     {  
+            variantId: 128,
+            variantColor: 'green',
+            variantImage: 'https://assets.adidas.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/0e93f61f9ef34059b008ac5b003074ac_9366/Krossovki_adidas_ZX_8000_x_LEGO(r)_zelenyj_FY7082_01_standard.jpg',
+            variantQuantity: 4,
+            price: 4500,
+            },
+           ]"></product>
+ 
+  <div class="basket">
+  <p>Количество товаров в корзине: {{this.$root.cartQuantity }}</p>
+      </div>
+  </div>
+</div>
+
+
+</div> 
+    
+  
+ <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
